@@ -58,13 +58,13 @@ def handle_message(event):
                     text=random.choice(const.KEYWORDS_REPLY[keyword])
                 )
             )
-            if keyword == "予定":
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(
-                        text=google_calender.get_schedule(const.MY_CALENDAR_ID)
-                    )
-                )
+            # if keyword == "予定":
+            #     line_bot_api.reply_message(
+            #         event.reply_token,
+            #         TextSendMessage(
+            #             text=google_calender.get_schedule(const.MY_CALENDAR_ID)
+            #         )
+            #     )
             return
     line_bot_api.reply_message(
         event.reply_token,
