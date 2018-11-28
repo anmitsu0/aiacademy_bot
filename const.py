@@ -1,4 +1,4 @@
-IS_PARROT_REPRY = False  # default: True
+IS_PARROT_REPLY = False  # default: True
 
 MY_CALENDAR_ID = "anmitsu35@gmail.com"
 

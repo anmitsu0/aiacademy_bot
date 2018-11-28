@@ -12,8 +12,8 @@ from linebot.models import TextSendMessage
 import os
 import random
 
-from . import const
-from . import google_calender
+from ai_academy.aiacademy_bot import const
+from ai_academy.aiacademy_bot import google_calender
 
 app = Flask(__name__)
 
@@ -45,7 +45,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if const.IS_PARROT_REPRY:
+    if const.IS_PARROT_REPLY:
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=event.message.text))
