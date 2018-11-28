@@ -12,7 +12,8 @@ from linebot.models import TextSendMessage
 import os
 import random
 
-from . import reply_list
+from . import const
+from . import google_calender
 
 app = Flask(__name__)
 
@@ -44,25 +45,31 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    is_parrot_reply = False  # default: True
-    if is_parrot_reply:
+    if const.IS_PARROT_REPRY:
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=event.message.text))
         return
-    for keyword in reply_list.KEYWORDS_REPLY:
+    for keyword in const.KEYWORDS_REPLY:
         if keyword in event.message.text:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(
-                    text=random.choice(reply_list.KEYWORDS_REPLY[keyword])
-                ))
+                    text=random.choice(const.KEYWORDS_REPLY[keyword])
+                )
+            )
+            if keyword == "予定":
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(
+                        text=google_calender.get_schedule(const.MY_CALENDAR_ID)
+                    )
+                )
             return
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(
-            text=random.choice(reply_list.NORMAL_REPLY)
-        ))
+        TextSendMessage(text=random.choice(const.NORMAL_REPLY))
+    )
 
 
 if __name__ == "__main__":
