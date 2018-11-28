@@ -12,6 +12,8 @@ from linebot.models import TextSendMessage
 import os
 import random
 
+from . import reply_list
+
 app = Flask(__name__)
 
 # 環境変数
@@ -40,41 +42,6 @@ def callback():
     return "OK"
 
 
-KEYWORDS_REPLY = {
-    "妹": [
-        "妹じゃないです",
-    ],
-    "姉": [
-        "呼びません！",
-        "呼びません！",
-        "呼びません！",
-        "呼びません！",
-        "呼びません！",
-        "呼びません！",
-        "呼びません！",
-        "呼びません！",
-        "ココアお姉ちゃん… ですね",
-        "シャロさんみたいな姉が欲しかったです",
-        "…お姉ちゃんの ねぼすけ",
-        "ごめんねお姉ちゃん…\nいい子になるからもう怒らないで…",
-    ],
-}
-
-NORMAL_REPLY = [
-    "おはようございます",
-    "これからおじいちゃんを焼きます",
-    "そんな危険なものをいれるくらいなら\nパサパサパンで我慢します！",
-    "もふもふ喫茶…",
-    "非売品です",
-    "私の腹話術です",
-    "えらい えらいです",
-    "お話… 一緒に寝る…\n私にちゃんと出来るかな…",
-    "ティッピーが頭に乗ってたら2倍の力が出せるんです\nうそじゃないです",
-    "わ 私おいしくないです！\n食べないでください！",
-    "もっと笑ってたら\nお客さん来てくれる…？",
-]
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     is_parrot_reply = False  # default: True
@@ -83,18 +50,18 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=event.message.text))
         return
-    for keyword in KEYWORDS_REPLY:
+    for keyword in reply_list.KEYWORDS_REPLY:
         if keyword in event.message.text:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(
-                    text=random.choice(KEYWORDS_REPLY[keyword])
+                    text=random.choice(reply_list.KEYWORDS_REPLY[keyword])
                 ))
             return
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(
-            text=random.choice(NORMAL_REPLY)
+            text=random.choice(reply_list.NORMAL_REPLY)
         ))
 
 
