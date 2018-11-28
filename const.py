@@ -2,6 +2,8 @@ IS_PARROT_REPLY = False  # default: True
 
 MY_CALENDAR_ID = "anmitsu35@gmail.com"
 
+PLAN_NAME = "予定"
+
 KEYWORDS_REPLY = {
     "妹": [
         "妹じゃないです",
@@ -18,7 +20,7 @@ KEYWORDS_REPLY = {
         "…お姉ちゃんの ねぼすけ",
         "ごめんねお姉ちゃん…\nいい子になるからもう怒らないで…",
     ],
-    "予定": [
+    PLAN_NAME: [
         "こちらになります",
         "どうぞ",
     ]
