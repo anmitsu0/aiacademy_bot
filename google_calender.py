@@ -49,10 +49,10 @@ def get_schedule(calendar_id="primary"):
         # print(start, event['summary'])
         if len(start) == 10:
             new_start = start.replace("-", "/")
-            new_start += " " * 7
+            new_start += "\t\t"
         elif len(start) == 25:
             start_datetime = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S+09:00")
-            new_start = start_datetime.strftime("%Y/%m/%d %H:%M ")
+            new_start = start_datetime.strftime("%Y/%m/%d %H:%M\t")
         else:
             new_start = "(No dateTime)"
         msg += "{} {}\n".format(new_start, event['summary'])
