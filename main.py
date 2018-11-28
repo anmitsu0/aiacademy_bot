@@ -12,8 +12,8 @@ from linebot.models import TextSendMessage
 import os
 import random
 
-from ai_academy.aiacademy_bot import const
-from ai_academy.aiacademy_bot import google_calender
+from . import const
+from . import google_calender
 
 app = Flask(__name__)
 
