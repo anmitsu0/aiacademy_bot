@@ -47,5 +47,13 @@ def get_schedule(calendar_id="primary"):
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
         # print(start, event['summary'])
-        msg += "{} {}\n".format(start, event['summary'])
+        if len(start) == 10:
+            new_start = start.replace("-", "/")
+            new_start += " " * 7
+        elif len(start) == 25:
+            start_datetime = datetime.datetime.strptime(start, "%Y-%m-%dT%H:%M:%S+09:00")
+            new_start = start_datetime.strftime("%Y/%m/%d %H:%M ")
+        else:
+            new_start = "(No dateTime)"
+        msg += "{} {}\n".format(new_start, event['summary'])
     return msg
