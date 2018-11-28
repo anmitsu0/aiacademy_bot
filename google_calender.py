@@ -48,3 +48,4 @@ def get_schedule(calendar_id="primary"):
         start = event['start'].get('dateTime', event['start'].get('date'))
         # print(start, event['summary'])
         msg += "{} {}\n".format(start, event['summary'])
+    return msg
