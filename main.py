@@ -91,9 +91,10 @@ def get_body_on_events_insert(org_text):
     try:
         date_str = org_text.split("\n")[0]
         summary = org_text.split("\n")[1]
-        description = org_text.replace(
-            "{}\n{}\n".format(date_str, summary), ""
-        )
+        if summary:
+            description = org_text.replace(
+                "{}\n{}\n".format(date_str, summary), ""
+            )
         dt = parser.parse(date_str)
     except Exception as e:
         print(e, type(e))
