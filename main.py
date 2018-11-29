@@ -54,17 +54,32 @@ def handle_message(event):
     # "parrot"入力 →オウム返し設定
     if org_text == const.TEXT_SET_PARROT:
         const.IS_PARROT_REPLY = True
+        const.IS_TIPPY_REPLY = False
         reply_text = org_text
         reply(event, reply_text, plan_text)
         return
     # "chino"入力 →オウム返し解除
     if org_text == const.TEXT_SET_CHINO:
         const.IS_PARROT_REPLY = False
+        const.IS_TIPPY_REPLY = False
         reply_text = org_text
         reply(event, reply_text, plan_text)
         return
+    # "tippy"入力 →ティッピーの台詞限定モード
+    if org_text == const.TEXT_TIPPY:
+        const.IS_PARROT_REPLY = False
+        const.IS_TIPPY_REPLY = True
+        reply_text = org_text
+        reply(event, reply_text, plan_text)
+        return
+    # "parrot"モード中
     if const.IS_PARROT_REPLY:
         reply_text = org_text
+        reply(event, reply_text, plan_text)
+        return
+    # "tippy"モード中
+    if const.IS_TIPPY_REPLY:
+        reply_text = random.choice(const.TIPPY_REPLY)
         reply(event, reply_text, plan_text)
         return
     # カレンダーに予定を追加 ~ 1行目:日時 (2行目:タイトル) (3行目:内容)
