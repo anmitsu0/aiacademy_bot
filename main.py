@@ -50,11 +50,25 @@ def callback():
 def handle_message(event):
     reply_text = ""
     plan_text = ""
-    if const.IS_PARROT_REPLY:
-        reply_text = event.message.text
+    org_text = event.message.text
+    # "parrot"入力 →オウム返し設定
+    if org_text == const.TEXT_SET_PARROT:
+        const.IS_PARROT_REPLY = True
+        reply_text = org_text
         reply(event, reply_text, plan_text)
         return
-    body = get_body_on_events_insert(event.message.text)
+    # "chino"入力 →オウム返し解除
+    if org_text == const.TEXT_SET_CHINO:
+        const.IS_PARROT_REPLY = False
+        reply_text = org_text
+        reply(event, reply_text, plan_text)
+        return
+    if const.IS_PARROT_REPLY:
+        reply_text = org_text
+        reply(event, reply_text, plan_text)
+        return
+    # カレンダーに予定を追加 ~ 1行目:日時 (2行目:タイトル) (3行目:内容)
+    body = get_body_on_events_insert(org_text)
     if body:
         google_calender.set_schedule(
             calendar_id=const.MY_CALENDAR_ID,
@@ -63,13 +77,16 @@ def handle_message(event):
         reply_text = random.choice(const.INSERT_REPLY)
         reply(event, reply_text, plan_text)
         return
-    keywords = [s for s in const.KEYWORDS_REPLY if s in event.message.text]
+    keywords = [s for s in const.KEYWORDS_REPLY if s in org_text]
+    # キーワードが含まれていない場合
     if not keywords:
         reply_text = random.choice(const.NORMAL_REPLY)
+    # キーワード:"予定"の場合 ~ 直近10件までの予定を取得表示する
     elif const.PLAN_NAME in keywords:
         keyword = const.PLAN_NAME
         reply_text = random.choice(const.KEYWORDS_REPLY[keyword])
         plan_text = google_calender.get_schedule(const.MY_CALENDAR_ID)
+    # キーワード:["妹","姉"]の場合
     else:
         keyword = random.choice(keywords)
         reply_text = random.choice(const.KEYWORDS_REPLY[keyword])
@@ -87,11 +104,13 @@ def get_body_on_events_insert(org_text=""):
     else:
         start = None
         end = None
+        # 日にちのみ指定した場合
         if dt.strftime(const.TIME_FORMAT) == const.TOP_TIME:
             td = datetime.timedelta(days=1)
             dt_format = const.DATE_FORMAT
             start = dict(date=dt.strftime(dt_format))
             end = dict(date=(dt + td).strftime(dt_format))
+        # (日にち,)時間を指定した場合
         else:
             td = datetime.timedelta(hours=1)
             dt_format = const.DATETIME_FORMAT
