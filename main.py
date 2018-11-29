@@ -66,7 +66,7 @@ def handle_message(event):
         reply(event, reply_text, plan_text)
         return
     # "tippy"入力 →ティッピーの台詞限定モード
-    if org_text == const.TEXT_TIPPY:
+    if org_text == const.TEXT_SET_TIPPY:
         const.IS_PARROT_REPLY = False
         const.IS_TIPPY_REPLY = True
         reply_text = org_text
