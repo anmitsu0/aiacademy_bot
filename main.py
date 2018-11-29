@@ -103,12 +103,8 @@ def get_body_on_events_insert(org_text=""):
                 dateTime=(dt + td).strftime(dt_format),
                 timeZone=const.TIME_ZONE
             )
-        summary = ""
-        description = ""
-        if len(lines) >= 1:
-            summary = lines[1]
-        if len(lines) >= 2:
-            description = lines[2:]
+        summary = lines[1] if len(lines) >= 2 else ""
+        description = lines[2:] if len(lines) >= 3 else ""
         return dict(
             start=start,
             end=end,
