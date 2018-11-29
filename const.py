@@ -5,7 +5,7 @@ TOP_TIME = "00:00:00"
 TIME_ZONE = "Asia/Tokyo"
 
 IS_PARROT_REPLY = False  # default: True
-TEXT_SET_PARROTN = "parrot"
+TEXT_SET_PARROT = "parrot"
 TEXT_SET_CHINO = "chino"
 MY_CALENDAR_ID = "anmitsu35@gmail.com"
 PLAN_NAME = "予定"
