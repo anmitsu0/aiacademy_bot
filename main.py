@@ -48,10 +48,11 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    reply_text = None
+    plan_text = None
     if const.IS_PARROT_REPLY:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=event.message.text))
+        reply_text = event.message.text
+        reply(event, reply_text, plan_text)
         return
     body = get_body_on_events_insert(event.message.text)
     if body:
@@ -59,31 +60,23 @@ def handle_message(event):
             calendar_id=const.MY_CALENDAR_ID,
             body=body
         )
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=random.choice(const.INSERT_REPLY))
-        )
+        reply_text = random.choice(const.INSERT_REPLY)
+        reply(event, reply_text, plan_text)
         return
-    for keyword in const.KEYWORDS_REPLY:
-        if keyword in event.message.text:
-            msg1 = TextSendMessage(
-                text=random.choice(const.KEYWORDS_REPLY[keyword])
-            )
-            msg2 = TextSendMessage(
-                text=google_calender.get_schedule(const.MY_CALENDAR_ID)
-            )
-            line_bot_api.reply_message(
-                event.reply_token,
-                (msg1 if keyword != const.PLAN_NAME else [msg1, msg2])
-            )
-            return
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=random.choice(const.NORMAL_REPLY))
-    )
+    keywords = [s for s in const.KEYWORDS_REPLY if s in event.message.text]
+    if not keywords:
+        reply_text = random.choice(const.NORMAL_REPLY)
+    elif const.PLAN_NAME in keywords:
+        keyword = const.PLAN_NAME
+        reply_text = random.choice(const.KEYWORDS_REPLY[keyword])
+        plan_text = google_calender.get_schedule(const.MY_CALENDAR_ID)
+    else:
+        keyword = random.choice(keywords)
+        reply_text = random.choice(const.KEYWORDS_REPLY[keyword])
+    reply(event, reply_text, plan_text)
 
 
-def get_body_on_events_insert(org_text):
+def get_body_on_events_insert(org_text=""):
     date_str = ""
     summary = ""
     description = ""
@@ -91,10 +84,9 @@ def get_body_on_events_insert(org_text):
     try:
         date_str = org_text.split("\n")[0]
         summary = org_text.split("\n")[1]
-        if summary:
-            description = org_text.replace(
-                "{}\n{}\n".format(date_str, summary), ""
-            )
+        description = org_text.replace(
+            "{}\n{}\n".format(date_str, summary), ""
+        )
         dt = parser.parse(date_str)
     except Exception as e:
         print(e, type(e))
@@ -125,6 +117,22 @@ def get_body_on_events_insert(org_text):
             end=end,
             summary=summary,
             description=description
+        )
+
+
+def reply(event, reply_text="", plan_text=""):
+    if plan_text:
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text=reply_text),
+                TextSendMessage(text=plan_text)
+            ]
+        )
+    else:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply_text)
         )
 
 
