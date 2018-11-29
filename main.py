@@ -48,8 +48,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    reply_text = None
-    plan_text = None
+    reply_text = ""
+    plan_text = ""
     if const.IS_PARROT_REPLY:
         reply_text = event.message.text
         reply(event, reply_text, plan_text)
