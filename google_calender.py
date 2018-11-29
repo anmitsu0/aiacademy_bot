@@ -69,7 +69,7 @@ def set_schedule(
     if not body.get("start"):
         print("# set_schedule: no 'start' in body")
         return False
-    if not body.get("start"):
+    if not body.get("end"):
         print("# set_schedule: no 'end' in body")
         return False
     creds = ServiceAccountCredentials.from_json_keyfile_name(
