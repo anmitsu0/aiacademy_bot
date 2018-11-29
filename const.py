@@ -1,8 +1,17 @@
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DATE_FORMAT = "%Y-%m-%d"
+TIME_FORMAT = "%H:%M:%S"
+TOP_TIME = "00:00:00"
+TIME_ZONE = "Asia/Tokyo"
+
 IS_PARROT_REPLY = False  # default: True
-
 MY_CALENDAR_ID = "anmitsu35@gmail.com"
-
 PLAN_NAME = "予定"
+
+INSERT_REPLY = [
+    "予定、入れておきました",
+    "ご注文ありがとうございます",
+]
 
 KEYWORDS_REPLY = {
     "妹": [
@@ -28,6 +37,9 @@ KEYWORDS_REPLY = {
 
 NORMAL_REPLY = [
     "おはようございます",
+    "早く起きてください",
+    "コーヒー、淹れますね",
+    "なんだこの客",
     "これからおじいちゃんを焼きます",
     "そんな危険なものをいれるくらいなら\nパサパサパンで我慢します！",
     "もふもふ喫茶…",

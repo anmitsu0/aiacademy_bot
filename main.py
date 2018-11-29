@@ -12,6 +12,9 @@ from linebot.models import TextSendMessage
 import os
 import random
 
+from dateutil import parser
+import datetime
+
 import const
 import google_calender
 
@@ -50,6 +53,17 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=event.message.text))
         return
+    body = get_body_on_events_insert(event.message.text)
+    if body:
+        google_calender.set_schedule(
+            calendar_id=const.MY_CALENDAR_ID,
+            body=body
+        )
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=random.choice(const.INSERT_REPLY))
+        )
+        return
     for keyword in const.KEYWORDS_REPLY:
         if keyword in event.message.text:
             msg1 = TextSendMessage(
@@ -67,6 +81,50 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=random.choice(const.NORMAL_REPLY))
     )
+
+
+def get_body_on_events_insert(org_text):
+    date_str = ""
+    summary = ""
+    description = ""
+    dt = None
+    try:
+        date_str = org_text.split("\n")[0]
+        summary = org_text.split("\n")[1]
+        description = org_text.replace(
+            "{}\n{}\n".format(date_str, summary), ""
+        )
+        dt = parser.parse(date_str)
+    except Exception as e:
+        print(e, type(e))
+        return None
+    else:
+        td = None
+        dt_format = ""
+        start = None
+        end = None
+        if dt.strftime(const.TIME_FORMAT) == const.TOP_TIME:
+            td = datetime.timedelta(days=1)
+            dt_format = const.DATE_FORMAT
+            start = dict(date=dt.strftime(dt_format))
+            end = dict(date=(dt + td).strftime(dt_format))
+        else:
+            td = datetime.timedelta(hours=1)
+            dt_format = const.DATETIME_FORMAT
+            start = dict(
+                dateTime=dt.strftime(dt_format),
+                timeZone=const.TIME_ZONE
+            )
+            end = dict(
+                dateTime=(dt + td).strftime(dt_format),
+                timeZone=const.TIME_ZONE
+            )
+        return dict(
+            start=start,
+            end=end,
+            summary=summary,
+            description=description
+        )
 
 
 if __name__ == "__main__":

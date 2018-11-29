@@ -6,7 +6,7 @@ from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = 'https://www.googleapis.com/auth/calendar'
 
 
 def get_schedule(calendar_id="primary"):
@@ -57,3 +57,28 @@ def get_schedule(calendar_id="primary"):
             new_start = "(No dateTime)"
         msg += "{} {}\n".format(new_start, event['summary'])
     return msg
+
+
+def set_schedule(
+        calendar_id="primary",
+        body=None
+        ):
+    if not body:
+        print("# set_schedule: no body")
+        return False
+    if not body.get("start"):
+        print("# set_schedule: no 'start' in body")
+        return False
+    if not body.get("start"):
+        print("# set_schedule: no 'end' in body")
+        return False
+    creds = ServiceAccountCredentials.from_json_keyfile_name(
+        "google_key.json",
+        scopes=SCOPES
+    )
+    service = build('calendar', 'v3', http=creds.authorize(Http()))
+    service.events().insert(
+        calendarId=calendar_id,
+        body=body
+    ).execute()
+    return True
