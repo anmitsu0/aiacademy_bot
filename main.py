@@ -77,23 +77,14 @@ def handle_message(event):
 
 
 def get_body_on_events_insert(org_text=""):
-    date_str = ""
-    summary = ""
-    description = ""
-    dt = None
     try:
-        date_str = org_text.split("\n")[0]
-        summary = org_text.split("\n")[1]
-        description = org_text.replace(
-            "{}\n{}\n".format(date_str, summary), ""
-        )
+        lines = org_text.split("\n")
+        date_str = lines[0]
         dt = parser.parse(date_str)
     except Exception as e:
         print(e, type(e))
         return None
     else:
-        td = None
-        dt_format = ""
         start = None
         end = None
         if dt.strftime(const.TIME_FORMAT) == const.TOP_TIME:
@@ -112,6 +103,8 @@ def get_body_on_events_insert(org_text=""):
                 dateTime=(dt + td).strftime(dt_format),
                 timeZone=const.TIME_ZONE
             )
+        summary = lines[1] if len(lines) >= 1 else ""
+        description = lines[2:] if len(lines) >= 2 else ""
         return dict(
             start=start,
             end=end,
